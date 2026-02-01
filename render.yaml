@@ -1,0 +1,66 @@
+# Render.com Blueprint
+# https://render.com/docs/blueprint-spec
+
+services:
+  # FastAPI Backend
+  - type: web
+    name: blog-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    region: frankfurt  # или oregon, singapore
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DEBUG
+        value: "false"
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: blog-db
+          property: connectionString
+        # Нужно заменить postgres:// на postgresql+asyncpg://
+      - key: REDIS_URL
+        fromService:
+          name: blog-redis
+          type: redis
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: FRONTEND_URL
+        fromService:
+          name: blog-frontend
+          type: web
+          property: url
+
+  # Next.js Frontend
+  - type: web
+    name: blog-frontend
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    region: frankfurt
+    plan: free
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          name: blog-api
+          type: web
+          property: url
+        # Добавь /api/v1 в конце вручную после деплоя
+
+  # Redis
+  - type: redis
+    name: blog-redis
+    region: frankfurt
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+
+databases:
+  # PostgreSQL
+  - name: blog-db
+    region: frankfurt
+    plan: free
+    databaseName: blog_db
+    user: blog_user

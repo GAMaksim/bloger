@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+__pycache__/
+*.pyc
+
+# Environment variables - НИКОГДА не коммитить!
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env.local
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Testing
+coverage/
+.pytest_cache/
+htmlcov/
+.nyc_output/
+
+# Database files (local development)
+*.db
+*.sqlite3
+
+# Docker volumes (if local)
+postgres_data/
+redis_data/
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc
+.vercel
+.turbo
